@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>rhoffmann8.github.io</title>
+ <link href="http://rhoffmann8.github.io/" rel="self"/>
+ <link href="http://rhoffmann8.github.io"/>
+ <updated>2015-05-04T17:52:20-04:00</updated>
+ <id>http://rhoffmann8.github.io</id>
+ <author>
+   <name>Rob Hoffmann</name>
+   <email>rhoffmann8@gmail.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>Simple Bing search automation</title>
+   <link href="http://rhoffmann8.github.io/2015/05/03/simple-bing-search-automation"/>
+   <updated>2015-05-03T00:00:00-04:00</updated>
+   <id>http://rhoffmann8.github.io/2015/05/03/simple-bing-search-automation</id>
+   <content type="html">
+&lt;p&gt;After having a bit of trouble figuring out how I would start off the first post, I decided to start with something very simple, yet useful to me. &lt;/p&gt;
+
+&lt;p&gt;Not too long ago it occurred to me I could be getting free Amazon cards from &lt;a href=&quot;https://www.bing.com/rewards/&quot;&gt;Bing Rewards&lt;/a&gt; for just running the same searches every day. After kicking myself for not realizing this sooner, I went to work looking for automation solutions.&lt;/p&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;Of course various automation sites and extensions exist for achieving just this, but I rolled my own solution because:&lt;/p&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;I like knowing exactly what the tool is doing&lt;/li&gt;
+	&lt;li&gt;There likely is educational value, however small, in coding your own solution&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The result was &lt;a href=&quot;https://github.com/rhoffmann8/autobing&quot;&gt;this small piece of JS&lt;/a&gt; which I run in the browser console every day:&lt;/p&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+var xhr = new XMLHttpRequest(),
+    multiplier = 1000, // 1 second
+    topics = [ // some common topics
+        'weather', 'news', 'sports', 'actors', 'television', 'movies', 'economy', 'business', 'politics', 'music', 
+        'games', 'food', 'cars', 'fashion', 'clothing', 'trending', 'microsoft', 'google', 'facebook', 'twitter', 
+        'wikipedia', 'reddit', 'web', 'java', 'javascript', 'ecmascript', 'nodejs', 'jquery', 'angularjs', 'coffeescript', 
+        'npm', 'karma', 'grunt', 'gulpjs', 'bower', 'php', 'python', 'ruby', 'c++', 'github'
+    ];
+
+for (var i = 0; i &amp;lt; topics.length; i++) {
+    (function(time) {
+        setTimeout(function() {
+            xhr.open('GET', window.location.protocol + '//www.bing.com/search?q='+topics[time]+'&amp;amp;go=Submit');
+            xhr.send();
+        },time*multiplier);
+    })(i);
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;Mobile searches can be done by simply toggling device emulation in Developer Tools.&lt;/p&gt;
+
+&lt;p&gt;To make things even easier I found a &lt;a href=&quot;https://chrome.google.com/webstore/detail/shortcut-manager/mgjjeipcdnnjhgodgjpfkffcejoljijf&quot;&gt;Chrome extension&lt;/a&gt; which allows for mapping keyboard shortcuts to JS code. I simply added Bing to the shortcut's matching URL patterns and mapped a key combination to execute the JS code located on my Github repo.&lt;/p&gt;
+
+&lt;p&gt;And that's all there is to it! If you're a bit perplexed by the function invocation in that loop up there, take a look at the &lt;a href=&quot;https://www.google.com/?gws_rd=ssl#q=javascript+loop+closure+problem&quot;&gt;loop-closure problem&lt;/a&gt; in JavaScript.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ 
+</feed>

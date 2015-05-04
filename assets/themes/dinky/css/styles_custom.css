@@ -1,0 +1,173 @@
+body {
+	font-family: "Roboto", "Helvetica" sans-serif;
+}
+
+h1, h2, h3 {
+	font-family: "Roboto", "Helvetica" sans-serif;
+	border: none;
+}
+
+h4, h5, h6 {
+	font-family: "Roboto", "Helvetica" sans-serif;
+}
+
+h1.header {
+	font-family: "Roboto", "Helvetica" sans-serif;
+	text-align: center;
+	background-color: #F7F7F7;
+	border: 1px solid #E5E5E5;
+	border-radius: 35px;
+	-moz-border-radius: 35px;
+	-webkit-border-radius: 35px;
+}
+
+h1.header a {
+	color: brown;
+	font-size: 18px;
+}
+
+/* Sidebar */
+
+header {
+	margin: 0 auto;
+	text-align: center;
+	background-color: #FBFAF7;
+	border: none;
+	padding-left: 25px;
+	width: 185px;
+}
+
+header ul {
+	margin-top: 10px;
+	margin-left: 15px;
+}
+
+header li {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	margin-bottom: 0px;
+}
+
+header li:hover {
+	background: none;
+}
+
+header a:hover {
+	text-decoration: none;
+}
+
+p.tagline {
+	font-size: 14px;
+	line-height: 1.4em;
+	margin-bottom: 10px;
+}
+
+p.tagline a {
+	font-weight: bold;
+	color: black;
+}
+
+#share-buttons {
+	text-align: center;
+}
+
+#share-buttons img {
+	width: 32px;
+	height: 32px;
+	padding: 0px;
+	border: none;
+	margin: 0;
+	box-shadow: 0;
+	display: inline;
+}
+
+#about-links {
+	color: black;
+}
+
+#about-links a {
+	color: #C30000;
+}
+
+/* Content */
+
+.post {
+	margin-bottom: 40px;
+	border-bottom: 1px solid #BBB;
+}
+
+.post-header { 
+	margin: 5px 0px 10px 0px;
+}
+
+.post-header a {
+	color: #3A8888;
+	text-decoration: none
+}
+
+.post-header a:hover {
+	color: #3AAAAA;
+	text-decoration: none
+}
+
+.post-content {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+ul.posts {
+	list-style-type: none;
+}
+
+.tag {
+	color: brown;
+	background-color: white;
+	border: 1px solid #E5E5E5;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	padding: 1px 5px 1px 5px;
+}
+
+footer small {
+	font-size: 12px;
+}
+
+code {
+	font-size: 12px;
+	line-height: 1.4em;
+}
+
+ul.list-style-none li {
+	list-style: none;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+@media print, screen and (max-width: 960px) {
+	footer {
+		text-align: center;
+	}
+	header {
+		padding-right: 0px;
+	}
+}
+
+@media print, screen and (max-width: 480px) {
+	footer {
+		padding-top: 5px;
+	}
+
+	footer a {
+		display: inline-block;
+	}
+}
+
+@media print, screen and (max-width: 720px) {
+	code {
+		word-wrap: normal;
+	}
+}
