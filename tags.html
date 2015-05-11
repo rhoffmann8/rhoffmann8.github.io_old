@@ -1,117 +1,20 @@
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="author" content="Rob Hoffmann" />
-    <title></title>
-
-    <link rel="stylesheet" href="/assets/themes/dinky/css/styles.css">
-    <link rel="stylesheet" href="/assets/themes/dinky/css/styles_custom.css">
-    <link rel="stylesheet" href="/assets/themes/dinky/css/pygment_trac.css">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/assets/themes/dinky/js/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    
-
-
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <div class="logo"></div>
-        <h1 class="header"><a href="/">rhoffmann8.github.io</a></h1>
-        <p class="tagline header"><a href="/about.html">Full-time programmer, cautiously hopeful Mets fan.</a></p>
-        <div id="share-buttons">
-        
-          <a href="http://github.com/rhoffmann8/" rel="me">
-            <img src="/assets/themes/dinky/images/GitHub-Mark-32px.png">
-          </a>
-          <a href="http://twitter.com/sgfault/" rel="me">
-            <img src="/assets/themes/dinky/images/icon-twitter.svg">
-          </a>
-          <a href="http://plus.google.com/106157659251612844689/" rel="me">
-            <img src="/assets/themes/dinky/images/icon-gplus.svg">
-          </a>
-          <a href="mailto:rhoffmann8@gmail.com" rel="me">
-            <img src="/assets/themes/dinky/images/email.png">
-          </a>
-          <a href="/atom.xml" rel="me">
-            <img src="/assets/themes/dinky/images/rss.png">
-          </a>
-        </div>
-        
-        <div id="about-links">
-        <a href="/about.html">About</a> | <a href="/tags.html">Tags</a> | <a href="/archive.html">Archive</a>
-        
-        
-        
-      </header>
-
-      <section>
-      
-<section>
-	
-
-  
+---
+layout: page
+header: Posts By Tag
+group: navigation
+---
+{% include JB/setup %}
 
 <!-- <ul class="tag_box inline">
-    
-  
-
-
-  
-     
-    	<li><a href="/tags.html#javascript-ref">javascript <span>1</span></a></li>
-    
-  
-
-
-
+  {% assign tags_list = site.tags %}  
+  {% include JB/tags_list %}
 </ul> -->
 
 
- 
-    
-  <h2 id="javascript-ref"><span class="tag">javascript</span> - 1 entry</h2>
+{% for tag in site.tags %} 
+  {% assign pages_list = tag[1] | sort %}  
+  <h2 id="{{ tag[0] }}-ref"><span class="tag">{{ tag[0] }}</span> - {{ pages_list.size }} {% if pages_list.size <= 1 %}entry{% else %}entries{% endif %}</h2>
   <ul>
-    
-
-
-  
-    
-      
-      	
-      	<li><a href="/2015/05/03/simple-bing-search-automation">Simple Bing search automation</a></li>
-      	
-      
-    
-  
-
-
-
+    {% include JB/pages_list %}
   </ul>
-
-
-  
-</section>
-
-
-      </section>
-
-      <footer>
-      <p><small>Hosted on <a href="http://pages.github.com/">GitHub Pages</a> using a slightly modified <a href="https://github.com/sodabrew/theme-dinky">Dinky theme</a> for <a href="http://jekyllbootstrap.com/">Jekyll Bootstrap</a></small></p>
-      </footer>
-    </div>
-    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
-  </body>
-</html>
-
+{% endfor %}
