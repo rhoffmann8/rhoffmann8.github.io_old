@@ -1,3 +1,3 @@
 # rhoffmann8.github.io
 
-Static files for http://rhoffmann8.github.io.
+Files for http://rhoffmann8.github.io.

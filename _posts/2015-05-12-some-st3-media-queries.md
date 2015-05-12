@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Some ST3 Media Queries"
+title: "Some ST3 media queries"
 description: ""
 category: 
 tags: [css, sublime-text]
