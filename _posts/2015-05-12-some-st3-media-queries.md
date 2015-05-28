@@ -13,7 +13,7 @@ So [Emmet](http://emmet.io) is pretty nice. Besides having tons of snippets out 
 
 I created a couple of media query snippets that maybe someone will find useful. If you want to utilize Bootstrap's Mobile First/Desktop First media queries but don't plan on using Bootstrap, typing **`@mfirst`** or **`@dfirst`** followed by tab will do that for you!
 
-{% highlight json %}
+<pre class="prettyprint lang-js">
 {
     "snippets": {
         "css": {
@@ -24,11 +24,11 @@ I created a couple of media query snippets that maybe someone will find useful. 
         }
     }
 }
-{% endhighlight %}
+</pre>
 
 @mfirst:
 
-{% highlight css %}
+<pre class="prettyprint lang-css">
 @media only screen and (min-width: 320px) {
 
 }
@@ -44,11 +44,11 @@ I created a couple of media query snippets that maybe someone will find useful. 
 @media only screen and (min-width: 1200px) {
 
 }
-{% endhighlight %}
+</pre>
 
 @dfirst:
 
-{% highlight css %}
+<pre class="prettyprint lang-css">
 @media only screen and (max-width: 1200px) {
 
 }
@@ -64,6 +64,6 @@ I created a couple of media query snippets that maybe someone will find useful. 
 @media only screen and (max-width: 320px) {
 
 }
-{% endhighlight %}
+</pre>
 
 Make sure your syntax is set to **CSS** for the trigger to work properly.

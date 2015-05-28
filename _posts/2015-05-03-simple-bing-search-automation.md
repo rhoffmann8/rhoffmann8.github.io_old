@@ -19,7 +19,7 @@ Of course various automation sites and extensions exist for achieving just this,
 
 The result was [this small piece of JS](https://github.com/rhoffmann8/autobing) which I run in the browser console every day:
 
-{% highlight js %}
+<pre class="prettyprint lang-js">
 var xhr = new XMLHttpRequest(),
     multiplier = 1000, // 1 second
     topics = [ // some common topics
@@ -37,7 +37,7 @@ for (var i = 0; i < topics.length; i++) {
         },time*multiplier);
     })(i);
 }
-{% endhighlight %}
+</pre>
 
 Mobile searches can be done by simply toggling device emulation in Developer Tools.
 

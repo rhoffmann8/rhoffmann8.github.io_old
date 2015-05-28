@@ -25,29 +25,24 @@ So far so good. Except one day, the team received an email complaining about unn
 
 So I started to dig through the code. I knew in all likelihood the cron job was using a library that was also used in servicing requests made by normal site users, so something inside that library was trying to check which device the request came from. Eventually I found myself looking at this snippet (some variable names changed, but the idea is the same):
 
-{% highlight php startinline=true %}
+<pre class="prettyprint lang-php">
 public static function getObjectToProcessTask ($user) {
     if (is_null(self::$objectToProcessTask)) {
-        try {
-            ...
-            $objectToProcessTask = new ObjectToProcessTask();
-            $objectToProcessTask->setConfig($settings);
-            $objectToProcessTask->setSourceDevice();
-            self::$objectToProcessTask = $objectToProcessTask;
-            ...
-        } catch (Exception $e) {
-            die($e->getMessage());
-        }
+        ...
+        $objectToProcessTask = new ObjectToProcessTask();
+        $objectToProcessTask->setSourceDevice();
+        self::$objectToProcessTask = $objectToProcessTask;
+        ...
     }
     return self::$objectToProcessTask;
 }
-{% endhighlight %}
+</pre>
 
 *Okay,* I thought. *So we're getting an instance of an object that will clearly do something later that will require calling DeviceAnalyzer. Why don't we just give it some dummy device from the cron job, so it knows what the device is and skips the call to DA?*
 
 Well sure enough, that's what the setter **`setSourceDevice`** method of the `ObjectToProcessTask` class was supposed to do:
 
-{% highlight php startinline=true %}
+<pre class="prettyprint lang-php">
 public function setSourceDevice ($device=null) {
     if ($device != null) {    
         $this->sourceDevice = $device;    
@@ -58,45 +53,40 @@ public function setSourceDevice ($device=null) {
     }
 
 }
-{% endhighlight %}
+</pre>
 
 In order for the class methods to do what they needed to do, they depended on the **`$sourceDevice`** property having some sort of value. However, instead of the class always automatically assuming we didn't have this information and making a call to DA, this setter gives us the opportunity to pass in the device beforehand (for example, some dummy value like 'cron'), so when another method is invoked the class will already have the device at its disposal and skip the DA call.
 
 Why then, did the first snippet have this line?
 
-{% highlight php startinline=true %}
+<pre class="prettyprint lang-php">
 $objectToProcessTask->setSourceDevice();
-{% endhighlight %}
+</pre>
 
 Our only way of getting this object is using the `getObjectToProcessTask method`, and it's just assuming we don't have a device to give it! Instead, the function should be written like this:
 
-{% highlight php startinline=true %}
-public static function getObjectToProcessTask ($user, $device=null) {
+<pre class="prettyprint lang-php">
+public static function getObjectToProcessTask ($user, <span class="highlight-code">$device=null</span>) {
     if (is_null(self::$objectToProcessTask)) {
-        try {
-            ...
-            $objectToProcessTask = new ObjectToProcessTask();
-            $objectToProcessTask->setConfig($settings);
-            $objectToProcessTask->setSourceDevice($device);
-            self::$objectToProcessTask = $objectToProcessTask;
-            ...
-        } catch (Exception $e) {
-            die($e->getMessage());
-        }
+        ...
+        $objectToProcessTask = new ObjectToProcessTask();
+        $objectToProcessTask->setSourceDevice($device);
+        self::$objectToProcessTask = $objectToProcessTask;
+        ...
     }
     return self::$objectToProcessTask;
 }
-{% endhighlight %}
+</pre>
 
 Perfect! Now we can actually use that setter in the way it was intended -- to inject the device if we so choose instead of making its own decision and wasting a call to DeviceAnalyzer. In the cron script we can now do the following:
 
-{% highlight php startinline=true %}
+<pre class="prettyprint lang-php">
 ObjectToProcessTaskHelper::getObjectToProcessTask($user, 'cron');
-{% endhighlight %}
+</pre>
 
 Sure enough, the extra requests to DeviceAnalyzer went away after that. We could even take it a step further (and in the Java world this would almost certainly be the case) and use an interface for the device:
 
-{% highlight php startinline=true %}
+<pre class="prettyprint lang-php">
 public static function getObjectToProcessTask ($user, IDevice $device=null) {
     ...
 }
@@ -105,13 +95,16 @@ public static function getObjectToProcessTask ($user, IDevice $device=null) {
 
 class DesktopDevice implements IDevice {...}
 class CronDevice implements IDevice {...}
-{% endhighlight %}
+</pre>
 
 Since the argument is an interface, any mock device object can be used.
 
 So what have we (hopefully) learned from this?
 
-* Dependency injection is just passing in values a class depends on, rather than it assuming some default value or behavior. This can be done with a setter method as we saw above, or through a constructor (also kind of what we saw above -- we ended up passing a value to a method which constructed the object if it did not exist, which in turn used it in a setter).
+* Dependency injection is just passing in values a class depends on rather than it assuming some default value or behavior. We are *injecting* whatever properties the class requires for use in later functionality. We can achieve this a couple ways:
+
+  * A mutator (setter) method, like we saw with setSourceDevice()
+  * Arguments to a constructor (also kind of what we saw above -- we ended up passing a value to a method which constructed the object if it did not exist, which in turn used it in a setter).
 
 * DI gives us the flexibility to swap out values without having to rewrite code. If we wanted to run a test suite against this module, we could just as easily pass in 'test' as the `$device` argument instead of 'cron' and achieve the same end result.
 
