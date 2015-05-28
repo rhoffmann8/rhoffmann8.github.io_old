@@ -120,7 +120,8 @@ ul.posts {
 	list-style-type: none;
 }
 
-.tag {
+.post-header .tag,
+h2 .tag {
 	color: brown;
 	background-color: white;
 	border: 1px solid #E5E5E5;
@@ -128,6 +129,22 @@ ul.posts {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	padding: 1px 5px 1px 5px;
+}
+
+pre.prettyprint {
+    display: block;
+    overflow: auto;
+    width: auto;
+    /* max-height: 600px; */
+    white-space: pre;
+    word-wrap: normal;
+    padding: 10px;   
+    font-family: "Inconsolata, Courier", monospace;
+}
+
+pre .highlight-code {
+	font-weight: bold;
+  	background-color: #474747;
 }
 
 footer small {
