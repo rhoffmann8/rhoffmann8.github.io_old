@@ -131,6 +131,8 @@ h2 .tag {
 	padding: 1px 5px 1px 5px;
 }
 
+/* Code blocks */
+
 pre.prettyprint {
     display: block;
     overflow: auto;
@@ -154,6 +156,20 @@ footer small {
 code {
 	font-size: 12px;
 	line-height: 1.4em;
+}
+
+/* Tables */
+.dinky-table th, 
+.dinky-table td {
+	font-family: "Roboto", "Helvetica" sans-serif;
+}
+.dinky-table th {
+	padding: 5px 5px;
+	font-size: 14px;
+}
+.dinky-table td {
+	padding: 0px 5px;
+	background: #EEE;
 }
 
 ul.list-style-none li {
