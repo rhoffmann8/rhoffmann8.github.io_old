@@ -158,6 +158,11 @@ code {
 	line-height: 1.4em;
 }
 
+img {
+	display: block;
+	margin: 10px 0px 10px 0px;
+}
+
 /* Tables */
 .dinky-table th, 
 .dinky-table td {
@@ -181,26 +186,34 @@ ul.list-style-none li {
 }
 
 @media print, screen and (max-width: 960px) {
+	body {
+		padding: 10px 10px 0 0;
+	}
 	footer {
 		text-align: center;
 	}
+	section {
+    	padding: 20px 10px 20px 10px;
+	}
 	header {
-		padding-right: 0px;
+		padding: 10px 0 0 0;
+}
+
+@media print, screen and (max-width: 720px) {
+	code {
+		word-wrap: normal;
 	}
 }
 
 @media print, screen and (max-width: 480px) {
+	body {
+		padding: 10px 0px 0 0;
+	}
 	footer {
 		padding-top: 5px;
 	}
 
 	footer a {
 		display: inline-block;
-	}
-}
-
-@media print, screen and (max-width: 720px) {
-	code {
-		word-wrap: normal;
 	}
 }
