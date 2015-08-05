@@ -7,7 +7,7 @@ tags: [concepts, php]
 ---
 {% include JB/setup %}
 
-If you're like me, you heard the term "dependency injection" (probably in the Java world) and immediately rushed over to StackOverflow fearing you would immediately lose your first full-time job for not having ever heard the term prior to gradiation. It certainly *sounds* complex, and if you had the pleasure of working with a framework like [Spring](http://projects.spring.io/spring-framework/) you may have been confused even further with its annotation-based way of doing things.
+If you're like me, you heard the term "dependency injection" (probably in the Java world) and immediately rushed over to StackOverflow fearing you would immediately lose your first full-time job for not having ever heard the term prior to graduation. It certainly *sounds* complex, and if you had the pleasure of working with a framework like [Spring](http://projects.spring.io/spring-framework/) you may have been confused even further with its annotation-based way of doing things.
 
 <!--more-->
 
