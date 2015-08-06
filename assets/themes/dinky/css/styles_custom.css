@@ -203,6 +203,9 @@ ul.list-style-none li {
 	code {
 		word-wrap: normal;
 	}
+	footer {
+		margin: 0 30px 0 30px;
+	}
 }
 
 @media print, screen and (max-width: 480px) {
@@ -211,6 +214,7 @@ ul.list-style-none li {
 	}
 	footer {
 		padding-top: 5px;
+		margin: 0 10px 0 10px;
 	}
 
 	footer a {
