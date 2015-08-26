@@ -15,31 +15,43 @@ A couple of weeks ago I made a [Joomla component](https://github.com/rhoffmann8/
 
 Joomla uses a table, `#__modules_menu` with two columns, `menuid` and `moduleid`. When configuring the Menu Assignment section of a Joomla module there are four options to choose from in the "Module Assignment" dropdown:
 
-  * On all pages
-  * No pages
-  * Only on the pages selected
-  * On all pages except those selected
+<ul class="collection">
+  <li class="collection-item">On all pages</li>
+  <li class="collection-item">No pages</li>
+  <li class="collection-item">Only on the pages selected</li>
+  <li class="collection-item">On all pages except those selected</li>
+</ul>
 
 The rules for storing rows in the `#__modules_menu` table for each selection are as follows:
 
-  * For all pages, store one row with this module id and "0" as the menu id
-  * For no pages, do not store any row with this module id
-  * For only selected pages, store one row per menu id with this module id
-  * For on all pages except selected, store the *negative* menu id of each selection with this module id
+<ul class="collection">
+  <li class="collection-item">For all pages, store one row with this module id and "0" as the menu id</li>
+  <li class="collection-item">For no pages, do not store any row with this module id</li>
+  <li class="collection-item">For only selected pages, store one row per menu id with this module id</li>
+  <li class="collection-item">For on all pages except selected, store the *negative* menu id of each selection with this module id</li>
+</ul>
 
 For example, for a module with an id of 10, if I had three menu items -- 1, 2, and 3 -- and I chose only selected with 1 selected, the table would look like this:
 
-<table class="dinky-table">
+<table class="">
+  <thead>
     <tr><th>moduleid</th><th>menuid</th></tr>
+  </thead>
+  <tbody>
     <tr><td>10</td><td>1</td></tr>
+  </tbody>
 </table>
 
 If I chose all except selected with menus 2 and 3 selected, the table would look like this:
 
-<table class="dinky-table">
+<table class="">
+  <thead>
     <tr><th>moduleid</th><th>menuid</th></tr>
+  </thead>
+  <tbody>
     <tr><td>10</td><td>-2</td></tr>
     <tr><td>10</td><td>-3</td></tr>
+  </tbody>
 </table>
 
 Pretty simple, but considering I could not find this information in any official documentation I'm hoping I can save someone else a trip through the Joomla source code.

@@ -1,0 +1,14 @@
+<div class="post-header">
+  <h3>{{ page.title }}</h3>
+
+  <span class="bold">{{ page.date | date: "%B %e, %Y" }}</span>
+  {% if page.tags.size > 0 %}
+      |
+    {% for tag in page.tags: %}
+      <a href="{{ HOME_PATH }}tags.html#{{ tag }}-ref"><span class="tag bold">#{{ tag }}</span></a>
+    {% endfor %}
+  {% endif %}
+</div>
+<div class="post-content light">
+  {{ content }}
+</div>

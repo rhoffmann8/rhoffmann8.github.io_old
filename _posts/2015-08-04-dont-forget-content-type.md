@@ -34,7 +34,7 @@ app.post('/events', function(req, res) {
 
 However, every time I triggered the appropriate action in the provided HTML5 game to send the request, `req.body` was empty! As an intermediate Node.js programmer I thought I had missed something simple or perhaps was using some deprecated parsing functionality by mistake. I checked the request payload to see if it was syntactically incorrect, but to no avail. After about a half hour of futilify it occured to me to double check the request headers:
 
-<img alt="Content-Type here is text/plain, instead of application/json" src="/assets/images/2015-08-04-content-type.png" style="width:260px;margin: 0 auto;">
+<img class="materialboxed" width="260" data-caption="Content-Type here is text/plain instead of application/json" src="/assets/images/2015-08-04-content-type.png">
 
 The game was not setting the `Content-Type` header to **application/json** -- instead it was **text/plain**. This made the bodyParser unable to parse it correctly.
 

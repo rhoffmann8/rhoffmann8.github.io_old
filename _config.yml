@@ -8,8 +8,8 @@ highlighter: pygments
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
-title : rhoffmann8.github.io
-tagline: Full-time programmer, cautiously hopeful Mets fan.
+title : Rob Hoffmann
+tagline: Front-end engineer, PHP developer, New York Mets fan.
 author :
   name : Rob Hoffmann
   email : rhoffmann8@gmail.com
@@ -131,3 +131,38 @@ JB :
   # where [HELPER] is the name of the helper you are overriding.
   
 excerpt_separator: <!--more-->
+
+sass:
+  sass_dir: _sass
+
+stadiums:
+  - {name: Angel Stadium of Anaheim, visited: false}
+  - {name: AT&T Park, visited: false}
+  - {name: Busch Stadium, visited: false}
+  - {name: Chase Field, visited: false}
+  - {name: Citi Field, visited: true}
+  - {name: Citizens Bank Park, visited: false}
+  - {name: Comerica Park, visited: false}
+  - {name: Coors Field, visited: false}
+  - {name: Dodger Stadium, visited: false}
+  - {name: Fenway Park, visited: false}
+  - {name: Globe Life Park in Arlington, visited: false}
+  - {name: Great American Ball Park, visited: false}
+  - {name: Kauffman Stadium, visited: false}
+  - {name: Marlins Park, visited: false}
+  - {name: Miller Park, visited: false}
+  - {name: Minute Maid Park, visited: false}
+  - {name: Nationals Park, visited: false}
+  - {name: O.co Coliseum, visited: false}
+  - {name: Oriole Park at Camden Yards, visited: false}
+  - {name: Petco Park, visited: false}
+  - {name: PNC Park, visited: false}
+  - {name: Progressive Field, visited: false}
+  - {name: Rogers Centre, visited: false}
+  - {name: Safeco Field, visited: false}
+  - {name: Target Field, visited: false}
+  - {name: Tropicana Field, visited: false}
+  - {name: Turner Field, visited: true}
+  - {name: U.S. Cellular Field, visited: false}
+  - {name: Wrigley Field, visited: false}
+  - {name: Yankee Stadium, visited: false}
