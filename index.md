@@ -13,7 +13,7 @@ tagline: Supporting tagline
 	  {% if post.tags.size > 0 %}
 	  	|
 		  {% for tag in post.tags: %}
-		  	<a href="{{ HOME_PATH }}tags.html#{{ tag }}-ref"><span class="tag">#{{ tag }}</span></a>
+		  	<a href="{{ HOME_PATH }}tags.html#{{ tag }}-ref"><span class="tag bold">#{{ tag }}</span></a>
 		  {% endfor %}
 	  {% endif %}
 	</div>
