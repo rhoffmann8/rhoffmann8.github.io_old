@@ -82,12 +82,6 @@ article {
   }
 }
 
-.stadiums {
-  .visited {
-    text-decoration: line-through;
-  }
-}
-
 .bold {
   font-weight: bold;
 }
@@ -103,6 +97,11 @@ footer {
 
 pre {
   white-space: pre !important;
+  font-size: 0.75em;
+}
+
+pre.prettyprint {
+  width: 100%;
 }
 
 @media #{$small-and-down} {
