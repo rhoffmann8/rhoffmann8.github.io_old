@@ -1,31 +1,44 @@
-[{
-  "id": "2015-09-10-another-jquery-cautionary-tale",
-  "title": "Another jQuery cautionary tale",
-  "date": "10 Sep 2015",
-  "description": "An unexpected behavioral change across versions sent me on a three-hour chase."
-},{
-  "id": "2015-08-04-dont-forget-content-type",
-  "title": "Don't forget Content-Type",
-  "date": "4 Aug 2015",
-  "description": "My Express application was expecting JSON, but that's not what it got..."
-},{
-  "id": "2015-06-28-module-assignments-in-joomla",
-  "title": "Module assignments in Joomla",
-  "date": "28 Jun 2015",
-  "description": "A simple explanation of module-to-menu assignment in Joomla! CMS."
-},{
-  "id": "2015-05-25-dependency-injection-a-practical-example",
-  "title": "Dependency injection, a practical example",
-  "date": "25 May 2015",
-  "description": "The real-world example I wish I had when I started out in said real world."
-},{
-  "id": "2015-05-20-a-framework-a-day",
-  "title": "A framework a day...",
-  "date": "20 May 2015",
-  "description": "Just-for-fun script to see if the JS world is as saturated with tools as it seems."
-},{
-  "id": "2015-05-12-some-st3-media-queries",
-  "title": "Some ST3 media queries",
-  "date": "12 May 2015",
-  "description": "My first post. Some quick little snippets I used briefly when dealing with Boostrap-like CSS."
-}]
+[
+  {
+    "id": "2016-01-01-new-year-new-site",
+    "title": "New year, new site",
+    "date": "1 Jan 2016",
+    "description": "Blowing up, starting fresh."
+  },
+  {
+    "id": "2015-09-10-another-jquery-cautionary-tale",
+    "title": "Another jQuery cautionary tale",
+    "date": "10 Sep 2015",
+    "description": "An unexpected behavioral change across versions sent me on a three-hour chase."
+  },
+  {
+    "id": "2015-08-04-dont-forget-content-type",
+    "title": "Don't forget Content-Type",
+    "date": "4 Aug 2015",
+    "description": "My Express application was expecting JSON, but that's not what it got..."
+  },
+  {
+    "id": "2015-06-28-module-assignments-in-joomla",
+    "title": "Module assignments in Joomla",
+    "date": "28 Jun 2015",
+    "description": "A simple explanation of module-to-menu assignment in Joomla! CMS."
+  },
+  {
+    "id": "2015-05-25-dependency-injection-a-practical-example",
+    "title": "Dependency injection, a practical example",
+    "date": "25 May 2015",
+    "description": "The real-world example I wish I had when I started out in said real world."
+  },
+  {
+    "id": "2015-05-20-a-framework-a-day",
+    "title": "A framework a day...",
+    "date": "20 May 2015",
+    "description": "Just-for-fun script to see if the JS world is as saturated with tools as it seems."
+  },
+  {
+    "id": "2015-05-12-some-st3-media-queries",
+    "title": "Some ST3 media queries",
+    "date": "12 May 2015",
+    "description": "My first post. Some quick little snippets I used briefly when dealing with Boostrap-like CSS."
+  }
+]
