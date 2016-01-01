@@ -1,0 +1,41 @@
+<div class="stadium {{active == stadium.name ? 'active' : ''}}">
+  <div class="stadium-name" ng-click="handleClick(stadium.name)" >
+    {{::stadium.name}}
+    <i ng-if=stadium.visited class="fa fa-check check"></i>
+    <span class="arrow {{active == stadium.name ? 'expand' : ''}}"></span>
+  </div>
+  <div class="stadium-details {{active == stadium.name ? 'expand' : ''}}">
+    <div ng-cloak ng-if="stadium.images && stadium.images.length" class="row center">
+      <div ng-controller="ImgCtrl" class="img-holder">
+        <div class="img-holder-inner">
+          <img ng-cloak ng-click="handleClick(image)" ng-repeat="image in stadium.images" src="{{::image}}">
+        </div>
+        <p ng-cloak ng-if="stadium.imageText" class="caption">
+          {{::stadium.imageText}}
+        </p>
+      </div>
+    </div>
+    <table>
+      <tr>
+        <td class="stadium-table-header">City</td>
+        <td>{{::stadium.city}}</td>
+      </tr>
+      <tr>
+        <td class="stadium-table-header">Home Team</td>
+        <td>{{::stadium.team}}</td>
+      </tr>
+      <tr>
+        <td class="stadium-table-header">Visited</td>
+        <td>{{::stadium.visitedDate}}</td>
+      </tr>
+      <tr ng-if=stadium.gameDetails>
+        <td class="stadium-table-header">Details</td>
+        <td>{{::stadium.gameDetails}}</td>
+      </tr>
+      <tr>
+        <td class="stadium-table-header">Notes</td>
+        <td ng-bind-html="stadium.notes"></td>
+      </tr>
+    </table>
+  </div>
+</div>

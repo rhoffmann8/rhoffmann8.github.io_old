@@ -1,0 +1,19 @@
+<h1>America's Pastime</h1>
+<section class="stadiums">
+  <p>
+    I've had the misfortune of being a dedicated Mets fan my entire life, for better or worse. Usually worse. However I've always enjoyed the game of baseball, especially recently now that I have the freedom to frequent games a bit more. A year or so back, I decided that I wanted to visit every baseball stadium in the country. Below is a list of stadiums that I will keep updated as I visit each one.
+  </p>
+  <p>Planned for next year are Wrigley, U.S. Cellular, and Miller Park.</p>
+
+  <p>Visited so far: {{(stadiums | filter:{visited: true}).length}}/{{stadiums.length}}</p>
+
+  <div class="stadium-group" ng-repeat="(key, value) in (stadiums | orderBy: 'state' | groupBy: 'state') track by key" bindonce>
+    <h2 class="stadium-group-header">{{key}}</h2>
+    <stadium
+      ng-repeat="stadium in ::value | orderBy: 'name' track by stadium.name"
+      bindonce
+      stadium="{{::stadium}}"
+    ></stadium>
+    </div>
+  </div>
+</section>

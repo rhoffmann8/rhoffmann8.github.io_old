@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rob Hoffmann</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="styles/bundle.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="scripts/bundle.min.js"></script>
+</head>
+<body>
+  <div id="app" ng-app="app">
+    <div class="nav-container">
+      <div class="logo">
+        <a href="#/">RH</a>
+      </div>
+      <div class="blurb">Thoughts from a less vocal member of the development community.</div>
+      <div class="contact-icons" ng-controller="ContactCtrl">
+        <ul>
+          <a href="{{item.url}}" ng-repeat="item in contact">
+            <li style="background: url(/images/icons/{{item.service}}.png)"></li>
+          </a>
+        </ul>
+      </div>
+      <nav ng-controller="NavCtrl" ng-cloak>
+        <ul>
+          <li ng-repeat="navItem in navItems">
+            <a ng-class="getActive('{{navItem.href}}')" href="{{navItem.href}}">{{navItem.text}}</a>
+          </li>
+        </ul>
+      </nav>
+      <div class="powered-by">Powered by Angular 1.4.8</div>
+    </div>
+    <div id="main">
+      <div class="{{pageClass}}" ng-view ng-cloak></div>
+    </div>
+  </div>
+</body>
+</html>

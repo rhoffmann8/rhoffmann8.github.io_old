@@ -1,0 +1,16 @@
+[{
+  "service": "github",
+  "url": "https://github.com/rhoffmann8" 
+},{
+  "service": "twitter",
+  "url": "https://twitter.com/rhoffmann8"
+},{
+  "service": "linkedin",
+  "url": "https://www.linkedin.com/in/rhoffmann8"
+},{
+  "service": "googleplus",
+  "url": "https://plus.google.com/106157659251612844689"
+},{
+  "service": "mail",
+  "url": "mailto:rhoffmann8@gmail.com"
+}]

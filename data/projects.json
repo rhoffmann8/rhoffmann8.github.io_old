@@ -1,0 +1,13 @@
+[{
+  "name": "This website",
+  "url": "https://github.com/rhoffmann8/gh-page-source",
+  "description": "Apparently if you don't know Angular, you're not good at JavaScript. At least that's what they told me. So I moved this entire site away from the Jekyll setup and wrote it in Angular, with Gulp as the build tool. Library scripts are bundled together with application code and output as a single JS and CSS file, and posts are still written in Markdown. Funny how I don't feel any better at JavaScript than I did before, though."
+},{
+  "name": "redux-jaca",
+  "url": "https://github.com/rhoffmann8/redux-jaca",
+  "description": "Just Another Chat App. A chat client I built using React and Redux which connects to a simple Socket.io server. Uses Webpack and Mocha for builds/testing."
+},{
+  "name": "redux-board-example",
+  "url": "https://github.com/rhoffmann8/redux-board-example",
+  "description": "My first dive into the React and Redux world. Illustrates simple keyboard movement across a board."
+}]

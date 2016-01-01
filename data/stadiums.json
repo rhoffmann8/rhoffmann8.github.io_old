@@ -1,0 +1,259 @@
+[{
+  "name": "Shea Stadium",
+  "city": "New York",
+  "state": "New York",
+  "team": "Mets",
+  "visited": true,
+  "visitedDate": "Many times",
+  "notes": "My childhood. Citi is definitely a much nicer stadium but I miss the old place. Watched a lot of blown games from the upper deck. I'll never forget the one summer as a kid I was only able to go to a couple of games, and both times Michael Stanton came in to blow a sizable lead. Thanks for nothing, Yankees.",
+  "images": [
+    "/images/stadiums/shea.jpg"
+  ],
+  "imageText": "Stock photo from Wikipedia until I can dig up one in the family photo album."
+},{
+  "name": "Citi Field",
+  "city": "New York",
+  "state": "New York",
+  "team": "Mets",
+  "visited": true,
+  "visitedDate": "Many times",
+  "notes": "Home base. Straight shot on the LIRR from my apartment. They're changing the Pepsi Porch to the Coke Corner in 2016 &mdash; sadly I'm in the minority that actually prefers Pepsi. I'm sure Keith is happy though.",
+  "images": [
+    "/images/stadiums/citi1.jpg",
+    "/images/stadiums/citi2.jpg"
+  ],
+  "imageText": "Two from 15 Jun 2015. Light rain makes the Shake Shack line so much shorter. Thor pitched against the Blue Jays, Mets won 4-3. RIP Pepsi Porch."
+},{
+  "name": "Yankee Stadium",
+  "city": "New York",
+  "state": "New York",
+  "team": "Yankees",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "Never been to Yankee Stadium, not even for a Subway Series game. Guess I wasn't quite old enough to take out a mortgage in order to afford tickets. Will probably try to make one this year.",
+  "images": []
+},{
+  "name": "Nationals Park",
+  "city": "Washington D.C.",
+  "state": "District of Columbia",
+  "team": "Nationals",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "I've appreciated Daniel Murphy at the plate despite his defense, but by going to the Gnats he is going to get booed by Mets fans for the rest of his career."
+},{
+  "name": "Fenway Park",
+  "city": "Boston",
+  "state": "Massachusetts",
+  "team": "Red Sox",
+  "visited": false,
+  "visitedDate": "TBD",
+  "visitedDate": "",
+  "notes": "",
+  "images": []
+},{
+  "name": "Wrigley Field",
+  "city": "Chicago",
+  "state": "Illinois",
+  "team": "Cubs",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "Slated for 2016. I'm afraid of what the fans will do to me after the 2015 NLCS.",
+  "images": []
+},{
+  "name": "U.S. Cellular Field",
+  "city": "Chicago",
+  "state": "Illinois",
+  "team": "White Sox",
+  "visisted": false,
+  "notes": "Slated for 2016.",
+  "images": []
+},{
+  "name": "Turner Field",
+  "city": "Atlanta",
+  "state": "Georgia",
+  "team": "Braves",
+  "visited": true,
+  "visitedDate": "20 Jun 2015",
+  "gameDetails": "Mets @ Braves, Braves W6-3",
+  "notes": "My first trip to the south (Florida doesn't count). Attended with a Tennessee native who is also a Dodgers fan. Syndergaard pitched a good game but the Mets couldn't hold the lead. TV doesn't quite do justice to how obnoxious the chop is. Sweetwater beer is pretty good.",
+  "images": [
+    "/images/stadiums/turner.jpg"
+  ],
+  "imageText": "Both teams wore special uniforms as part of MLB Heritage Weekend. The Braves represented the Negro League Atlanta Black Crackers while the Mets played as the Brooklyn Royal Giants (pictured above)."
+},{
+  "name": "Dodger Stadium",
+  "city": "Los Angeles",
+  "state": "California",
+  "team": "Dodgers",
+  "visited": true,
+  "visitedDate": "9 Oct 2015",
+  "gameDetails": "NLDS Game 1 - Mets @ Dodgers, Mets W3-1",
+  "notes": "First time on the west coast and first NLDS game attended. A friend in LA called me a week prior saying he had an extra ticket. Got to see an epic pitcher's duel between Kershaw and Syndergaard. Totally worth the large dent in my wallet for airfare. <a href=\"http://abc7.com/news/mets-fan-critically-injured-after-fight-at-dodger-stadium/1030446/\">Not the best fans I've encountered, though</a>. Also, Utley sucks.",
+  "images": [
+    "/images/stadiums/dodgers.jpg"
+  ],
+  "imageText": "Kershaw on the mound. The contingency of Mets fans a few rows in front of me took most of the abuse, for which I was grateful. I high-fived most of them on the way out."
+},{
+  "name": "Angel Stadium of Anaheim",
+  "city": "Anaheim",
+  "state": "California",
+  "team": "Angels",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "Something something Mike Trout"
+},{
+  "name": "AT&T Park",
+  "city": "San Francisco",
+  "state": "California",
+  "team": "Giants",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "Maybe some hyper-VC infused startup will offer me a job so I can barely afford rent on \"only\" six figures."
+},{
+  "name": "Busch Stadium",
+  "city": "St. Louis",
+  "state": "Missouri",
+  "team": "Cardinals",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Chase Field",
+  "city": "Phoenix",
+  "state": "Arizona",
+  "team": "Diamondbacks",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Comerica Park",
+  "city": "Detroit",
+  "state": "Michigan",
+  "team": "Tigers",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "Will probably buy up part of Detroit while I'm there."
+},{
+  "name": "Coors Field",
+  "city": "Denver",
+  "state": "Colorado",
+  "team": "Rockies",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Globe Life Park in Arlington",
+  "city": "Arlington",
+  "state": "Texas",
+  "team": "Rangers",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Great American Ball Park",
+  "city": "Cincinnati",
+  "state": "Ohio",
+  "team": "Reds",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "Almost jumped on a plane there for the 2015 Mets pennant clincher, decided I should buy food that month instead."
+},{
+  "name": "Kauffman Stadium",
+  "city": "Kansas City",
+  "state": "Missouri",
+  "team": "Royals",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "It still stings."
+},{
+  "name": "Marlins Park",
+  "city": "Miami",
+  "state": "Florida",
+  "team": "Marlins",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Miller Park",
+  "city": "Milwaukee",
+  "state": "Wisconsin",
+  "team": "Brewers",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "Slated for 2016."
+},{
+  "name": "Minute Maid Park",
+  "city": "Houston",
+  "state": "Texas",
+  "team": "Astros",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "O.co Coliseum",
+  "city": "Oakland",
+  "state": "California",
+  "team": "Athletics",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Oriole Park at Camden Yards",
+  "city": "Baltimore",
+  "state": "Maryland",
+  "team": "Orioles",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "Aside from Philly, I think the Baltimore/D.C. trip is going to be the hardest."
+},{
+  "name": "Petco Park",
+  "city": "San Diego",
+  "state": "California",
+  "team": "Padres",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "PNC Park",
+  "city": "Pittsburgh",
+  "state": "Pennsylvania",
+  "team": "Pirates",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Progressive Field",
+  "city": "Cleveland",
+  "state": "Ohio",
+  "team": "Indians",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Rogers Centre",
+  "city": "Toronto",
+  "state": "Canada",
+  "team": "Blue Jays",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "My team has <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Bartolo_Col%C3%B3n\">the only remaining Expo</a> in the MLB, and we love him."
+},{
+  "name": "Safeco Field",
+  "city": "Seattle",
+  "state": "Washington",
+  "team": "Mariners",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Target Field",
+  "city": "Minneapolis",
+  "state": "Minnesota",
+  "team": "Twins",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Tropicana Field",
+  "city": "St. Petersburg",
+  "state": "Florida",
+  "team": "Rays",
+  "visited": false,
+  "visitedDate": "TBD"
+},{
+  "name": "Citizen's Bank Park",
+  "city": "Philadelphia",
+  "state": "Pennsylvania",
+  "team": "Philthies",
+  "visited": false,
+  "visitedDate": "TBD",
+  "notes": "Never will you find a more wretched hive of scum and villany. Did I mention Utley sucks?"
+}]
