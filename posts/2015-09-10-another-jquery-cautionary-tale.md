@@ -163,7 +163,7 @@ return access( this, function( value ) {
   return value === undefined ?
     jQuery.text( this ) :
     this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
-}, null, value, arguments.length ); <span class="bold">// value = undefined, arguments.length = 0</span>
+}, null, value, arguments.length ); // value = undefined, arguments.length = 0
 ```
 
 Since `arguments.length` is 0, `chainable` would evaluate to false and the callback provided from `text`, which switches on `return value === undefined` and runs `jQuery.text( this )`, would be invoked via `fn.call( elems )`.
