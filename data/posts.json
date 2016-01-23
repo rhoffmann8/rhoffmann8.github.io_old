@@ -1,5 +1,11 @@
 [
   {
+    "id": "2016-01-23-why-isnt-webpack-devserver-property-working",
+    "title": "Why isn't Webpack devServer property working?",
+    "date": "23 Jan 2016",
+    "description": "Sometimes the answer is stupidly obvious."
+  },
+  {
     "id": "2016-01-01-new-year-new-site",
     "title": "New year, new site",
     "date": "1 Jan 2016",

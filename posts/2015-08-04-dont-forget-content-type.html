@@ -1,0 +1,62 @@
+<p>After two months of <a href="http://www.nydailynews.com/sports/baseball/mets/mets-anemic-offense-degrom-stop-cubs-6-1-loss-article-1.2279653">disappointment</a> <a href="http://espn.go.com/blog/new-york/mets/post/_/id/105410/terry-collins-no-batting-help-left-in-minors-for-anemic-mets">and</a> <a href="http://nypost.com/2015/06/07/mets-anemic-offense-wastes-colons-gem-in-loss-to-dbacks/">frustration</a>, things are finally <a href="http://www.newsday.com/sports/baseball/mets/mets-hit-three-home-runs-in-span-of-five-pitches-in-5-2-win-over-nationals-1.10701085">looking</a> <a href="http://sports.yahoo.com/blogs/mlb-big-league-stew/yoenis-cespedes-powers-red-hot-mets-into-sole-possession-of-first-place-063140941.html">up</a> for us Mets fans, aren&#39;t they? <a href="http://espn.go.com/blog/new-york/mets/post/_/id/108124/bryce-harper-gets-snippy-after-mets-take-sole-possession-of-first">Bryce might disagree though.</a></p>
+<p>This isn&#39;t so much a code tip as it is a friendly reminder to remember to specify your <code>Content-Type</code> header when making a HTTP request. Due to this, I recently ran into a interesting little issue at work.</p>
+<p>We have a small web-based tool that allows developers to upload HTML5 games and test them against a dummy API. Over the past few days I was tasked with recreating the tool in Node.js (it&#39;s an old PHP-based page that needed some fixing up -- I reached the conclusion it would be much simpler to redo it). At certain points during play, the game would send a JSON request with various details: event type, token, game data, etc. To receive and process the request, I had a pretty standard-looking <a href="http://expressjs.com/">express</a> route using a JSON parser:</p>
+<pre><code class="lang-js">var express = require(<span class="hljs-string">'express'</span>)<span class="hljs-comment">;</span>
+var bodyParser = require(<span class="hljs-string">'body-parser'</span>)<span class="hljs-comment">;</span>
+
+var app = express()<span class="hljs-comment">;</span>
+app.use(bodyParser.json())<span class="hljs-comment">;</span>
+
+<span class="hljs-comment">//...</span>
+
+app.post(<span class="hljs-string">'/events'</span>, function(req, res) {
+  log(req.body)<span class="hljs-comment">;</span>
+  processEvent(req.body)<span class="hljs-comment">;</span>
+
+  res.<span class="hljs-keyword">end</span>()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>However, every time I triggered the appropriate action in the provided HTML5 game to send the request, <code>req.body</code> was empty! As an intermediate Node.js programmer I thought I had missed something simple or perhaps was using some deprecated parsing functionality by mistake. I checked the request payload to see if it was syntactically incorrect, but to no avail. After about a half hour of futility it occured to me to double check the request headers:</p>
+<div class="row center">
+  <div class="img-holder">
+    <div class="img-holder-inner">
+      <img src="/images/2015-08-04-content-type.png" style="width:280px;">
+    </div>
+    <p class="caption">
+      Content-Type here is &quot;text/plain&quot; instead of &quot;application/json&quot;
+    </p>
+  </div>
+</div>
+
+<p>The game was not setting the <code>Content-Type</code> header to <strong>application/json</strong> -- instead it was <strong>text/plain</strong>. This made the bodyParser unable to parse it correctly.</p>
+<p>In a perfect world this would be corrected in the game itself by setting the header correctly, but this being reality I knew I would not be able to fix the other hundreds of games that had the same issue. So, I had to settle for parsing the request in its raw form:</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getRequestPayload</span><span class="hljs-params">(req)</span> {</span>
+  <span class="hljs-keyword">return</span> new Promise(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(resolve, reject)</span> {</span>
+    var str = <span class="hljs-string">''</span>;
+    req.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(buf)</span> {</span>
+      str += buf;
+    });
+    req.on(<span class="hljs-string">'end'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+      resolve(str);
+    });
+  });
+}
+
+app.post(<span class="hljs-string">'/events'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res)</span> {</span>
+  getRequestPayload(req)
+    .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(json)</span> {</span>
+      var json = JSON.parse(json);
+
+      <span class="hljs-built_in">log</span>(json);
+      processEvent(json);
+
+      res.<span class="hljs-keyword">end</span>();
+    })
+    .<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> {</span>
+      <span class="hljs-built_in">log</span>(err);
+      res.<span class="hljs-keyword">end</span>();
+    });
+});
+</code></pre>
+<p>If you&#39;re not familiar with <a href="https://promisesaplus.com/">promises</a> you should definitely check them out. In this particular instance I&#39;m using the <a href="https://github.com/petkaantonov/bluebird">Bluebird</a> promise library.</p>
+<p>Hopefully this reminder will spare another developer the expense of having to work around this.</p>

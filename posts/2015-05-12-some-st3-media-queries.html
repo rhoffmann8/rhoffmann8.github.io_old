@@ -1,0 +1,48 @@
+<p>So <a href="http://emmet.io">Emmet</a> is pretty nice. Besides having tons of snippets out of the box, it allows for the addition of <a href="http://docs.emmet.io/customization/snippets/">custom snippets</a> in either its settings file or in a <strong><code>snippets.json</code></strong> file in the extensions folder configured via the <strong><code>extensions_path</code></strong> setting in <strong><code>Emmet.sublime-settings</code></strong>.</p>
+<p>I created a couple of media query snippets that maybe someone will find useful. If you want to utilize Bootstrap&#39;s Mobile First/Desktop First media queries but don&#39;t plan on using Bootstrap, typing <strong><code>@mfirst</code></strong> or <strong><code>@dfirst</code></strong> followed by tab will do that for you!</p>
+<pre><code class="lang-js">{
+  "snippets": {
+    "css": {
+      "snippets": {
+        "@mfirst": "@media only screen and (min-width: 320px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>@media only screen and (min-width: 480px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>@media only screen and (min-width: 768px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>@media only screen and (min-width: 992px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>@media only screen and (min-width: 1200px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>",
+        "@dfirst": "@media only screen and (max-width: 1200px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>@media only screen and (max-width: 992px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>@media only screen and (max-width: 768px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>@media only screen and (max-width: 480px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>@media only screen and (max-width: 320px) {<span class="hljs-tag">\<span class="hljs-name">n</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>}<span class="hljs-tag">\<span class="hljs-name">n</span></span>"
+      }
+    }
+  }
+}
+</code></pre>
+<p>@mfirst:</p>
+<pre><code class="lang-css"><span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">min</span>-width: <span class="hljs-number">320</span>px) {
+
+}
+<span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">min</span>-width: <span class="hljs-number">480</span>px) {
+
+}
+<span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">min</span>-width: <span class="hljs-number">768</span>px) {
+
+}
+<span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">min</span>-width: <span class="hljs-number">992</span>px) {
+
+}
+<span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">min</span>-width: <span class="hljs-number">1200</span>px) {
+
+}
+</code></pre>
+<p>@dfirst:</p>
+<pre><code class="lang-css"><span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">max</span>-width: <span class="hljs-number">1200</span>px) {
+
+}
+<span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">max</span>-width: <span class="hljs-number">992</span>px) {
+
+}
+<span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">max</span>-width: <span class="hljs-number">768</span>px) {
+
+}
+<span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">max</span>-width: <span class="hljs-number">480</span>px) {
+
+}
+<span class="hljs-symbol">@media</span> only screen <span class="hljs-literal">and</span> (<span class="hljs-built_in">max</span>-width: <span class="hljs-number">320</span>px) {
+
+}
+</code></pre>
+<p>Make sure your syntax is set to <strong>CSS</strong> for the trigger to work properly.</p>

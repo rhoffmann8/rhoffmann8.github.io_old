@@ -1,0 +1,160 @@
+<p>One second, <a href="http://espn.go.com/blog/new-york/mets/post/_/id/110476/mets-sweep-nationals-in-catbird-seat-in-nl-east-race">I need to compose myself.</a></p>
+<p>There are plenty of warnings out there that reliance on undocumented behavior is dangerous and could potentially break your app. Of course, there are many more developers out there that will still manage to sneak in a hack every now and then that will take advantage of some quirk which may or may not come back to haunt them later. The latest one of these I found had to do with jQuery&#39;s <a href="http://api.jquery.com/text/">.text()</a> function and its behavior across versions.</p>
+<p>While refactoring a portion of our site we upgraded from jQuery 1.6.4 to 1.11.0. During QA it came to my attention that there was some random spacing appearing between the some validation error messages that did not happen prior to the upgrade.</p>
+<div class="row center">
+<div class="img-holder">
+  <div class="img-holder-inner">
+    <img src="/images/2015-09-10-error-messages.png">
+    <img src="/images/2015-09-10-error-messages-spaced.png">
+  </div>
+  <p class="caption" style="max-width:400px;">
+    Second image has slight vertical spacing between &quot;Date of Birth&quot; and &quot;Email&quot;. Apparently this was a big deal for the testing team.
+  </p>
+</div>
+</div>
+
+<p><em>Great, one of these.</em> I opened up my dev tools to see what was going on.</p>
+<div class="row center">
+<div class="img-holder">
+  <div class="img-holder-inner">
+    <img style="width:280px;" src="/images/2015-09-10-blank-error-div.png">
+  </div>
+  <p class="caption">
+    Well that doesn&#39;t look right...
+  </p>
+</div>
+</div>
+
+<p>Without changing any script related to error message construction, a blank error div appeared out of the nether that wasn&#39;t there before. I dug deeper into the third-party script we fetched server-side that dealt with these messages and found the relevant code:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">for</span> (var <span class="hljs-keyword">field</span> in cfg.errorFields) {
+  <span class="hljs-keyword">if</span> ((<span class="hljs-keyword">field</span> === <span class="hljs-string">"month"</span> || <span class="hljs-keyword">field</span> === <span class="hljs-string">"day"</span> || <span class="hljs-keyword">field</span> === <span class="hljs-string">"year"</span>) &amp;&amp; !dobAdded) {
+    innerShell.append($(<span class="hljs-string">"&lt;div class=\"error\"&gt;"</span>).text(<span class="hljs-built_in">self</span>._blankMessages[<span class="hljs-string">"dateOfBirth"</span>]));
+    dobAdded = <span class="hljs-literal">true</span>;
+  } <span class="hljs-keyword">else</span> {
+    innerShell.append($(<span class="hljs-string">"&lt;div class=\"error\"&gt;"</span>).text(<span class="hljs-built_in">self</span>._blankMessages[<span class="hljs-keyword">field</span>]));
+  }
+}
+</code></pre>
+<p>So if any one of the &quot;month&quot;, &quot;day&quot;, or &quot;year&quot; fields were blank, the code would show the message for DOB. On a subsequent iteration, if it caught another one of these 3 fields which was also blank, it defaulted to appending a blank error div and assigning a default message for that particular field. Except &quot;month&quot;, &quot;day&quot;, and &quot;year&quot; were not indices of self._blankMessages, so the argument defaulted to <code>undefined</code>. On the old page, the result was no div being constructed. Why did it start appearing after the upgrade?</p>
+<p>My suspicions were confirmed after running the same code on a test page with two different jQ libraries:</p>
+<pre><code class="lang-js">&gt; jQuery.fn.jquery
+<span class="hljs-string">"1.6.4"</span>
+&gt; $('&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"error"</span>&gt;').<span class="hljs-built_in">text</span>(undefined)
+<span class="hljs-string">""</span>
+</code></pre>
+<pre><code class="lang-js">&gt; jQuery.fn.jquery
+<span class="hljs-string">"1.11.0"</span>
+&gt; $('&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"error"</span>&gt;').<span class="hljs-built_in">text</span>(undefined)
+[ &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"error"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt; ]
+</code></pre>
+<p>Yep, there it is. Let&#39;s take a closer look at what&#39;s going on in jQuery:</p>
+<pre><code class="lang-js"><span class="hljs-comment">// jQuery 1.6.4</span>
+jQuery.fn.extend({
+  <span class="hljs-built_in">text</span>: function( <span class="hljs-built_in">text</span> ) {
+    <span class="hljs-keyword">if</span> ( jQuery.isFunction(<span class="hljs-built_in">text</span>) ) {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.each(function(i) {
+        var self = jQuery( <span class="hljs-keyword">this</span> );
+
+        self.<span class="hljs-built_in">text</span>( <span class="hljs-built_in">text</span>.call(<span class="hljs-keyword">this</span>, i, self.<span class="hljs-built_in">text</span>()) );
+      });
+    }
+
+    <span class="hljs-keyword">if</span> ( typeof <span class="hljs-built_in">text</span> !== <span class="hljs-string">"object"</span> &amp;&amp; <span class="hljs-built_in">text</span> !== undefined ) {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.empty().<span class="hljs-built_in">append</span>( (<span class="hljs-keyword">this</span>[<span class="hljs-number">0</span>] &amp;&amp; <span class="hljs-keyword">this</span>[<span class="hljs-number">0</span>].ownerDocument || document).createTextNode( <span class="hljs-built_in">text</span> ) );
+    }
+
+    <span class="hljs-keyword">return</span> jQuery.<span class="hljs-built_in">text</span>( <span class="hljs-keyword">this</span> ); <span class="hljs-comment">// In our case "text" is undefined, so getter function</span>
+                                <span class="hljs-comment">// is triggered which will return a blank string</span>
+  }
+
+  <span class="hljs-comment">//...</span>
+});
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-comment">// jQuery 1.11.0</span>
+jQuery.fn.extend({
+  text: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> value </span>) </span>{
+    <span class="hljs-keyword">return</span> access( <span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> value </span>) </span>{
+      <span class="hljs-keyword">return</span> value === <span class="hljs-literal">undefined</span> ?
+        jQuery.text( <span class="hljs-keyword">this</span> ) :
+        <span class="hljs-keyword">this</span>.empty().append( ( <span class="hljs-keyword">this</span>[<span class="hljs-number">0</span>] &amp;&amp; <span class="hljs-keyword">this</span>[<span class="hljs-number">0</span>].ownerDocument || <span class="hljs-built_in">document</span> ).createTextNode( value ) );
+    }, <span class="hljs-literal">null</span>, value, <span class="hljs-built_in">arguments</span>.length );
+  }
+
+  <span class="hljs-comment">//...</span>
+});
+</code></pre>
+<p>Both versions check if the value is defined in order to determine if it should invoke getter or setter behavior. However 1.11.0 makes use of a separate function called <code>access</code> to do this. This function appeared sometime between 1.6.4 and 1.7.2.</p>
+<pre><code class="lang-js">var access = jQuery.access = function( elems, <span class="hljs-function"><span class="hljs-keyword">fn</span>, <span class="hljs-built_in">key</span>, value, chainable, emptyGet, raw ) {
+  <span class="hljs-title">var</span> i = <span class="hljs-number">0</span>,
+    <span class="hljs-title">length</span> = elems.length,
+    <span class="hljs-title">bulk</span> = <span class="hljs-title">key</span> == <span class="hljs-built_in">null</span></span>;
+
+  <span class="hljs-comment">// Sets many values</span>
+  <span class="hljs-keyword">if</span> ( jQuery.<span class="hljs-built_in">type</span>( <span class="hljs-built_in">key</span> ) === <span class="hljs-string">"object"</span> ) {
+    chainable = true;
+    <span class="hljs-keyword">for</span> ( i in <span class="hljs-built_in">key</span> ) {
+      jQuery.access( elems, <span class="hljs-function"><span class="hljs-keyword">fn</span>, i, <span class="hljs-built_in">key</span>[i], true, emptyGet, raw )</span>;
+    }
+
+  <span class="hljs-comment">// Sets one value</span>
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ( value !== undefined ) {
+    chainable = true;
+
+    <span class="hljs-keyword">if</span> ( !jQuery.isFunction( value ) ) {
+      raw = true;
+    }
+
+    <span class="hljs-keyword">if</span> ( bulk ) {
+      <span class="hljs-comment">// Bulk operations run against the entire set</span>
+      <span class="hljs-keyword">if</span> ( raw ) {
+        <span class="hljs-function"><span class="hljs-keyword">fn</span>.<span class="hljs-keyword">call</span><span class="hljs-params">( elems, value )</span></span>;
+        <span class="hljs-function"><span class="hljs-keyword">fn</span> = <span class="hljs-built_in">null</span></span>;
+
+      <span class="hljs-comment">// ...except when executing function values</span>
+      } <span class="hljs-keyword">else</span> {
+        bulk = <span class="hljs-function"><span class="hljs-keyword">fn</span></span>;
+        <span class="hljs-function"><span class="hljs-keyword">fn</span> = function<span class="hljs-params">( elem, <span class="hljs-built_in">key</span>, value )</span> {
+          <span class="hljs-keyword">return</span> bulk.<span class="hljs-keyword">call</span><span class="hljs-params">( jQuery( elem )</span>, value )</span>;
+        };
+      }
+    }
+
+    <span class="hljs-keyword">if</span> ( <span class="hljs-function"><span class="hljs-keyword">fn</span> ) {
+      <span class="hljs-keyword">for</span> <span class="hljs-params">( ; i &lt; length; i++ )</span> {
+        <span class="hljs-keyword">fn</span><span class="hljs-params">( elems[i], <span class="hljs-built_in">key</span>, raw ? value : value.<span class="hljs-keyword">call</span>( elems[i], i, <span class="hljs-keyword">fn</span>( elems[i], <span class="hljs-built_in">key</span> )</span> ) )</span>;
+      }
+    }
+  }
+
+  <span class="hljs-keyword">return</span> chainable ?
+    elems :
+
+    <span class="hljs-comment">// Gets</span>
+    bulk ?
+      <span class="hljs-function"><span class="hljs-keyword">fn</span>.<span class="hljs-keyword">call</span><span class="hljs-params">( elems )</span> :
+      length ? <span class="hljs-keyword">fn</span><span class="hljs-params">( elems[<span class="hljs-number">0</span>], <span class="hljs-built_in">key</span> )</span> : emptyGet</span>;
+};
+</code></pre>
+<p>So what&#39;s changed? In 1.6.4 an <code>undefined</code> argument triggered the getter functionality of .text(), which was actually an <a href="https://github.com/jquery/jquery/pull/392">issue</a> of some debate years ago. With the addition of the access function however, a new condition <code>chainable</code> was introduced. In a typical getter invocation, .text() will call <code>access</code> as follows:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">return</span> access( <span class="hljs-keyword">this</span>, function( <span class="hljs-keyword">value</span> ) {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">value</span> === undefined ?
+    jQuery.text( <span class="hljs-keyword">this</span> ) :
+    <span class="hljs-keyword">this</span>.empty().append( ( <span class="hljs-keyword">this</span>[<span class="hljs-number">0</span>] &amp;&amp; <span class="hljs-keyword">this</span>[<span class="hljs-number">0</span>].ownerDocument || document ).createTextNode( <span class="hljs-keyword">value</span> ) );
+}, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">value</span>, arguments.length ); &lt;span <span class="hljs-keyword">class</span>=<span class="hljs-string">"bold"</span>&gt;<span class="hljs-comment">// value = undefined, arguments.length = 0&lt;/span&gt;</span>
+</code></pre>
+<p>Since <code>arguments.length</code> is 0, <code>chainable</code> would evaluate to false and the callback provided from <code>text</code>, which switches on <code>return value === undefined</code> and runs <code>jQuery.text( this )</code>, would be invoked via <code>fn.call( elems )</code>.</p>
+<p>According to the issue above, passing .text(undefined) should invoke the getter as well -- except we never get there. Since passing actual <code>undefined</code> results in <code>arguments.length</code> evaluating to 1, even though <code>value</code> is the same in both scenarios the callback function is never invoked! Instead, <code>elems</code> is returned rather than the blank string from the result of <code>jQuery.text</code>, so that was why the blank error div was being generated in the new site.</p>
+<p>I&#39;m not sure if this modified behavior was an intended side effect of jQuery&#39;s access function, but there is a more important lesson here. The code should have been more explicit in handling this kind of scenario, especially since the fix is very simple:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">for</span> (var <span class="hljs-keyword">field</span> in cfg.errorFields) {
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">field</span> === <span class="hljs-string">"month"</span> || <span class="hljs-keyword">field</span> === <span class="hljs-string">"day"</span> || <span class="hljs-keyword">field</span> === <span class="hljs-string">"year"</span>) {
+    <span class="hljs-keyword">if</span> (!dobAdded) {
+        innerShell.append($(<span class="hljs-string">"&lt;div class=\"error\"&gt;"</span>).text(<span class="hljs-built_in">self</span>._blankMessages[<span class="hljs-string">"dateOfBirth"</span>]));
+        dobAdded = <span class="hljs-literal">true</span>;
+    }
+  } <span class="hljs-keyword">else</span> {
+    innerShell.append($(<span class="hljs-string">"&lt;div class=\"error\"&gt;"</span>).text(<span class="hljs-built_in">self</span>._blankMessages[<span class="hljs-keyword">field</span>]));
+  }
+}
+</code></pre>
+<p>Problem solved. Instead of defaulting to the else case when another DOB field is encountered, simply skip adding a DOB error div if we already did so. Relying on a side-effect of passing <code>undefined</code> is never a good idea, and it will eventually create a headache for your coworkers.</p>
+<p>I understand this kind of stuff happens &mdash; after all, deadlines exist &mdash; but I hope this will remind you (it certainly did for me) to stop and think for a second next time you&#39;re in a situation like this and evaluate whether an odd behavior may be subject to change in the future.</p>

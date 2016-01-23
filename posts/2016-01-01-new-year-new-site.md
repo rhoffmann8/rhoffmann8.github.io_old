@@ -1,5 +1,0 @@
-Happy 2016 to everyone. A lot's happened since the last update &mdash; some good, some bad, [some that copious amounts of alcohol just can't seem to fix](http://www.nytimes.com/2015/11/02/sports/baseball/kansas-city-royals-beat-new-york-mets-world-series-game-5.html).
-
-I did away with the Jekyll setup for this site and wrote my own [build system](https://github.com/rhoffmann8/gh-page-source) to run it on Angular 1.4. I would have used React instead (`ng-repeat` makes the [Stadiums](/#/stadiums) page run pretty slow in IE), but I need to demonstrate basic competence in this framework or else I'm apparently not a good web developer.
-
-Hopefully I'll get around to posting more React and Redux stuff in the future. In the meantime you can check out my [Projects](/#/projects) page to see some example React projects.

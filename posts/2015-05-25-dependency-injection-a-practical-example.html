@@ -1,0 +1,73 @@
+<p>If you&#39;re like me, you heard the term &quot;dependency injection&quot; (probably in the Java world) and immediately rushed over to StackOverflow fearing you would immediately lose your first full-time job for not having ever heard the term prior to graduation. It certainly <em>sounds</em> complex, and if you had the pleasure of working with a framework like <a href="http://projects.spring.io/spring-framework/">Spring</a> you may have been confused even further with its annotation-based way of doing things.</p>
+<p>Relax. At its core it&#39;s a pretty simple concept &mdash; just ask <a href="http://www.jamesshore.com/Blog/Dependency-Injection-Demystified.html">James Shore</a>:</p>
+<blockquote>
+<p><em>&quot;Dependency Injection&quot; is a 25-dollar term for a 5-cent concept.</em></p>
+</blockquote>
+<p>If you&#39;ve searched around SO or other resources (or read the one I just linked) and still haven&#39;t gotten a handle on the concept quite yet (or have but are not sure why it is useful), hopefully I can help. In fact, I&#39;ll explain it using a real-life issue that came up at work recently rather than try to utilize another generic <a href="https://twitter.com/iamdevloper/status/531570316037087232">animal/person/car example</a>.</p>
+<p>When a user visits our website, we always want to know what kind of device they are using. There are various reasons for this: determining the optimal site layout for the user&#39;s screen, recording analytics, things like that. To determine this, our server makes a call to a DeviceAnalyzer service, which takes information from the request and returns what eventually ends up being a string containing either &quot;DESKTOP&quot;, &quot;TABLET&quot;, or &quot;MOBILE&quot;. This string will help to instruct the server what kind of decisions to make regarding the above functionality.</p>
+<p>One important thing to note is that <em>if our server already knows what device we are dealing with prior to calling DeviceAnalyzer, <strong>it skips the call altogether</strong></em>.</p>
+<p>So far so good. Except one day, the team received an email complaining about unnecessary requests being made to the DeviceAnalyzer service when it wasn&#39;t needed. We found that this occured when we ran cron jobs to do various tasks, ranging from building cache files to processing incomplete tasks that were stored in the database to be handled later. If you&#39;re not familiar with how a cron job works then simply picture the issue this way: we were trying to determine the device for a request that did not have any device associated with it, i.e. a request from a command line.</p>
+<p>So I started to dig through the code. I knew in all likelihood the cron job was using a library that was also used in servicing requests made by normal site users, so something inside that library was trying to check which device the request came from. Eventually I found myself looking at this snippet (some variable names changed, but the idea is the same):</p>
+<pre><code class="lang-php">public static <span class="hljs-keyword">function</span> getObjectToProcessTask ($user) {
+    if (is_null(self::$objectToProcessTask)) {
+        //...
+        $objectToProcessTask = new ObjectToProcessTask();
+        $objectToProcessTask-&gt;setSourceDevice();
+        self::$objectToProcessTask = $objectToProcessTask;
+        //...
+    }
+    return self::$objectToProcessTask;
+}
+</code></pre>
+<p><em>Okay,</em> I thought. <em>So we&#39;re getting an instance of an object that will clearly do something later that will require calling DeviceAnalyzer. Why don&#39;t we just give it some dummy device from the cron job, so it knows what the device is and skips the call to DA?</em></p>
+<p>Well sure enough, that&#39;s what the setter <strong><code>setSourceDevice</code></strong> method of the <code>ObjectToProcessTask</code> class was supposed to do:</p>
+<pre><code class="lang-php">public <span class="hljs-keyword">function</span> setSourceDevice ($device=null) {
+    if ($device != null) {
+        $this-&gt;sourceDevice = $device;
+    }
+    else {
+        $deviceType = strtoupper(DeviceAnalyzer::getType()); // if $device is not supplied, call DeviceAnalyzer
+        $this-&gt;sourceDevice = $deviceType;
+    }
+}
+</code></pre>
+<p>In order for the class methods to do what they needed to do, they depended on the <strong><code>$sourceDevice</code></strong> property having some sort of value. However, instead of the class always automatically assuming we didn&#39;t have this information and making a call to DA, this setter gives us the opportunity to pass in the device beforehand (for example, some dummy value like &#39;cron&#39;), so when another method is invoked the class will already have the device at its disposal and skip the DA call.</p>
+<p>Why then did the first snippet have this line?</p>
+<pre><code class="lang-php">$objectToProcessTask-&gt;setSourceDevice();
+</code></pre>
+<p>Our only way of getting this object is using the <code>getObjectToProcessTask method</code>, and it&#39;s just assuming we don&#39;t have a device to give it! Instead, the function should be written like this:</p>
+<pre><code class="lang-php">public static <span class="hljs-keyword">function</span> getObjectToProcessTask ($user, &lt;span class=<span class="hljs-string">"highlight-code"</span>&gt;$device=null&lt;/span&gt;) {
+    if (is_null(self::$objectToProcessTask)) {
+        //...
+        $objectToProcessTask = new ObjectToProcessTask();
+        $objectToProcessTask-&gt;setSourceDevice($device);
+        self::$objectToProcessTask = $objectToProcessTask;
+        //...
+    }
+    return self::$objectToProcessTask;
+}
+</code></pre>
+<p>Perfect! Now we can actually use that setter in the way it was intended &mdash; to inject the device if we so choose instead of making its own decision and wasting a call to DeviceAnalyzer. In the cron script we can now do the following:</p>
+<pre><code class="lang-php">ObjectToProcessTaskHelper::getObjectToProcessTask($user, <span class="hljs-string">'cron'</span>);
+</code></pre>
+<p>Sure enough, the extra requests to DeviceAnalyzer went away after that. We could even take it a step further (and in the Java world this would almost certainly be the case) and use an interface for the device:</p>
+<pre><code class="lang-php">public <span class="hljs-keyword">static</span> function getObjectToProcessTask ($user, <span class="hljs-type">IDevice</span> $device=null) {
+    //...
+}
+//...
+class <span class="hljs-type">DesktopDevice</span> implements <span class="hljs-type">IDevice</span> <span class="hljs-meta">{...}</span>
+class <span class="hljs-type">CronDevice</span> implements <span class="hljs-type">IDevice</span> <span class="hljs-meta">{...}</span>
+</code></pre>
+<p>Since the argument is an interface, any mock device object can be used.</p>
+<p>So what have we learned from this?</p>
+<ul>
+<li><p>Dependency injection is just passing in values a class depends on rather than it assuming some default value or behavior. We are <em>injecting</em> whatever properties the class requires for use in later functionality. We can achieve this a couple ways:</p>
+<ul>
+<li>A mutator (setter) method, like we saw with setSourceDevice()</li>
+<li>Arguments to a constructor (also kind of what we saw above; we ended up passing a value to a method which constructed the object if it did not exist, which in turn used it in a setter).</li>
+</ul>
+</li>
+<li><p>DI gives us the flexibility to swap out values without having to rewrite code. If we wanted to run a test suite against this module, we could just as easily pass in &#39;test&#39; as the <code>$device</code> argument instead of &#39;cron&#39; and achieve the same end result.</p>
+</li>
+</ul>
+<p>That&#39;s really all there is to it. There&#39;s no extra magic &mdash; all those complex frameworks employ various methods that eventually boil down to this simple concept.</p>
