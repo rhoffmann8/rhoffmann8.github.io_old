@@ -1,0 +1,48 @@
+<p>I&#39;m currently buried in over <a href="http://www.nbcnewyork.com/news/local/NYC-2016-Blizzard-Record-Snowfall-Historic-Snowstorm-Shuts-Down-Transit-Travel-Ban-Plows-366340361.html">20&quot; of snow</a>, so I might as well post something.</p>
+<p>I wrote a piece of PHP code a while back to grab some data from a cache; if it couldn&#39;t find what it needed, it should try a couple of other scenarios before giving up. The code looked something like the following:</p>
+<pre><code class="lang-php">$category = <span class="hljs-string">'someCategory'</span>;
+$cacheHandler-&gt;setCategory($category);
+$data = $cacheHandler-&gt;getData();
+
+<span class="hljs-keyword">if</span> (!count($data)) {
+  $cacheHandler-&gt;setCategory($category + <span class="hljs-string">'-someAlternative'</span>);
+  $data = $cacheHandler-&gt;getData();
+}
+
+<span class="hljs-keyword">if</span> (!count($data)) {
+  $cacheHandler-&gt;setCategory($category + <span class="hljs-string">'-someOtherAlternative'</span>);
+  $data = $cacheHandler-&gt;getData();
+}
+
+<span class="hljs-keyword">if</span> (!count($data)) {
+  $data = null;
+}
+</code></pre>
+<p>Yuck. An obvious solution would have been to refactor this logic into a method and return the data if it&#39;s found, avoiding the extra checks. If this was JavaScript, a function expression would have done the job:</p>
+<pre><code class="lang-js">var result = (() =&gt; {
+  let category = 'someCategory'<span class="hljs-comment">;</span>
+  cacheHandler.setCategory(<span class="hljs-name">category</span>)<span class="hljs-comment">;</span>
+  if (<span class="hljs-name">data</span> = cacheHandler.getData()) return data<span class="hljs-comment">;</span>
+
+  category = 'someCategory2'<span class="hljs-comment">;</span>
+  cacheHandler.setCategory(<span class="hljs-name">category</span>)<span class="hljs-comment">;</span>
+  if (<span class="hljs-name">data</span> = cacheHandler.getData()) return data<span class="hljs-comment">;</span>
+
+  // etc...
+})()<span class="hljs-comment">;</span>
+</code></pre>
+<p>But this was PHP. I&#39;m guessing at the time I didn&#39;t want to bother making a new method for a one-off operation, so I left it as is. I&#39;m guessing. There are many times I look at my old code and wonder what the hell I was thinking.</p>
+<p>Months later, a veteran on my team refactored the file. When I checked the code again, I saw this block in its place:</p>
+<pre><code class="lang-php">do {
+  $category = <span class="hljs-string">'someCategory'</span>;
+  $cacheHandler-&gt;setCategory($category);
+  if (!$data = $cacheHandler-&gt;getData()) break;
+
+  $cacheHandler-&gt;setCategory($category + <span class="hljs-string">'-someAlternative'</span>);
+  if (!$data = $cacheHandler-&gt;getData()) break;
+
+  $cacheHandler-&gt;setCategory($category + <span class="hljs-string">'-someOtherAlternative'</span>);
+  if (!$data = $cacheHandler-&gt;getData()) break;
+} <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>);
+</code></pre>
+<p>The <code>do-while</code> loop will only execute once and creates a separate block that can be broken out of at any time. It was a pretty neat trick I hadn&#39;t seen before, in case you don&#39;t want to extract the code to another method.</p>
