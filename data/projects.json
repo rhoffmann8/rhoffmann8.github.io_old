@@ -1,4 +1,8 @@
 [{
+  "name": "react-dynamojs",
+  "url": "https://github.com/rhoffmann8/react-dynamojs",
+  "description": "A React implementation of jdan's dynamo.js jQuery plugin."
+},{
   "name": "This website",
   "url": "https://github.com/rhoffmann8/gh-page-source",
   "description": "Apparently if you don't know Angular, you're not good at JavaScript. At least that's what they told me. So I moved this entire site away from the Jekyll setup and wrote it in Angular, with Gulp as the build tool. Library scripts are bundled together with application code and output as a single JS and CSS file, and posts are still written in Markdown. Funny how I don't feel any better at JavaScript than I did before, though."
