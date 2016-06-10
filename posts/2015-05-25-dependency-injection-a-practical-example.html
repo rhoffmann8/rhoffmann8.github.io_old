@@ -8,57 +8,45 @@
 <p>One important thing to note is that <em>if our server already knows what device we are dealing with prior to calling DeviceAnalyzer, <strong>it skips the call altogether</strong></em>.</p>
 <p>So far so good. Except one day, the team received an email complaining about unnecessary requests being made to the DeviceAnalyzer service when it wasn&#39;t needed. We found that this occured when we ran cron jobs to do various tasks, ranging from building cache files to processing incomplete tasks that were stored in the database to be handled later. If you&#39;re not familiar with how a cron job works then simply picture the issue this way: we were trying to determine the device for a request that did not have any device associated with it, i.e. a request from a command line.</p>
 <p>So I started to dig through the code. I knew in all likelihood the cron job was using a library that was also used in servicing requests made by normal site users, so something inside that library was trying to check which device the request came from. Eventually I found myself looking at this snippet (some variable names changed, but the idea is the same):</p>
-<pre><code class="lang-php">public static <span class="hljs-keyword">function</span> getObjectToProcessTask ($user) {
-    if (is_null(self::$objectToProcessTask)) {
-        //...
-        $objectToProcessTask = new ObjectToProcessTask();
-        $objectToProcessTask-&gt;setSourceDevice();
-        self::$objectToProcessTask = $objectToProcessTask;
-        //...
-    }
-    return self::$objectToProcessTask;
-}
-</code></pre>
-<p><em>Okay,</em> I thought. <em>So we&#39;re getting an instance of an object that will clearly do something later that will require calling DeviceAnalyzer. Why don&#39;t we just give it some dummy device from the cron job, so it knows what the device is and skips the call to DA?</em></p>
+<pre class="language-php"><code class="language-php"><span class="token keyword" >public</span> <span class="token keyword" >static</span> <span class="token keyword" >function</span> <span class="token function" >getObjectToProcessTask</span> <span class="token punctuation" >(</span><span class="token variable" >$user</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token keyword" >if</span> <span class="token punctuation" >(</span><span class="token function" >is_null</span><span class="token punctuation" >(</span>self<span class="token punctuation" >:</span><span class="token punctuation" >:</span><span class="token variable" >$objectToProcessTask</span><span class="token punctuation" >)</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+        <span class="token comment" spellcheck="true">//...</span>
+        <span class="token variable" >$objectToProcessTask</span> <span class="token operator" >=</span> <span class="token keyword" >new</span> <span class="token class-name" >ObjectToProcessTask</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+        <span class="token variable" >$objectToProcessTask</span><span class="token operator" >-</span><span class="token operator" >></span><span class="token function" >setSourceDevice</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+        self<span class="token punctuation" >:</span><span class="token punctuation" >:</span><span class="token variable" >$objectToProcessTask</span> <span class="token operator" >=</span> <span class="token variable" >$objectToProcessTask</span><span class="token punctuation" >;</span>
+        <span class="token comment" spellcheck="true">//...</span>
+    <span class="token punctuation" >}</span>
+    <span class="token keyword" >return</span> self<span class="token punctuation" >:</span><span class="token punctuation" >:</span><span class="token variable" >$objectToProcessTask</span><span class="token punctuation" >;</span>
+<span class="token punctuation" >}</span></code></pre><p><em>Okay,</em> I thought. <em>So we&#39;re getting an instance of an object that will clearly do something later that will require calling DeviceAnalyzer. Why don&#39;t we just give it some dummy device from the cron job, so it knows what the device is and skips the call to DA?</em></p>
 <p>Well sure enough, that&#39;s what the setter <strong><code>setSourceDevice</code></strong> method of the <code>ObjectToProcessTask</code> class was supposed to do:</p>
-<pre><code class="lang-php">public <span class="hljs-keyword">function</span> setSourceDevice ($device=null) {
-    if ($device != null) {
-        $this-&gt;sourceDevice = $device;
-    }
-    else {
-        $deviceType = strtoupper(DeviceAnalyzer::getType()); // if $device is not supplied, call DeviceAnalyzer
-        $this-&gt;sourceDevice = $deviceType;
-    }
-}
-</code></pre>
-<p>In order for the class methods to do what they needed to do, they depended on the <strong><code>$sourceDevice</code></strong> property having some sort of value. However, instead of the class always automatically assuming we didn&#39;t have this information and making a call to DA, this setter gives us the opportunity to pass in the device beforehand (for example, some dummy value like &#39;cron&#39;), so when another method is invoked the class will already have the device at its disposal and skip the DA call.</p>
+<pre class="language-php"><code class="language-php"><span class="token keyword" >public</span> <span class="token keyword" >function</span> <span class="token function" >setSourceDevice</span> <span class="token punctuation" >(</span><span class="token variable" >$device</span><span class="token operator" >=</span><span class="token keyword" >null</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token keyword" >if</span> <span class="token punctuation" >(</span><span class="token variable" >$device</span> <span class="token operator" >!=</span> <span class="token keyword" >null</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+        <span class="token variable" >$this</span><span class="token operator" >-</span><span class="token operator" >></span><span class="token property" >sourceDevice</span> <span class="token operator" >=</span> <span class="token variable" >$device</span><span class="token punctuation" >;</span>
+    <span class="token punctuation" >}</span>
+    <span class="token keyword" >else</span> <span class="token punctuation" >{</span>
+        <span class="token variable" >$deviceType</span> <span class="token operator" >=</span> <span class="token function" >strtoupper</span><span class="token punctuation" >(</span>DeviceAnalyzer<span class="token punctuation" >:</span><span class="token punctuation" >:</span><span class="token function" >getType</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span> <span class="token comment" spellcheck="true">// if $device is not supplied, call DeviceAnalyzer</span>
+        <span class="token variable" >$this</span><span class="token operator" >-</span><span class="token operator" >></span><span class="token property" >sourceDevice</span> <span class="token operator" >=</span> <span class="token variable" >$deviceType</span><span class="token punctuation" >;</span>
+    <span class="token punctuation" >}</span>
+<span class="token punctuation" >}</span></code></pre><p>In order for the class methods to do what they needed to do, they depended on the <strong><code>$sourceDevice</code></strong> property having some sort of value. However, instead of the class always automatically assuming we didn&#39;t have this information and making a call to DA, this setter gives us the opportunity to pass in the device beforehand (for example, some dummy value like &#39;cron&#39;), so when another method is invoked the class will already have the device at its disposal and skip the DA call.</p>
 <p>Why then did the first snippet have this line?</p>
-<pre><code class="lang-php">$objectToProcessTask-&gt;setSourceDevice();
-</code></pre>
-<p>Our only way of getting this object is using the <code>getObjectToProcessTask method</code>, and it&#39;s just assuming we don&#39;t have a device to give it! Instead, the function should be written like this:</p>
-<pre><code class="lang-php">public static <span class="hljs-keyword">function</span> getObjectToProcessTask ($user, &lt;span class=<span class="hljs-string">"highlight-code"</span>&gt;$device=null&lt;/span&gt;) {
-    if (is_null(self::$objectToProcessTask)) {
-        //...
-        $objectToProcessTask = new ObjectToProcessTask();
-        $objectToProcessTask-&gt;setSourceDevice($device);
-        self::$objectToProcessTask = $objectToProcessTask;
-        //...
-    }
-    return self::$objectToProcessTask;
-}
-</code></pre>
-<p>Perfect! Now we can actually use that setter in the way it was intended &mdash; to inject the device if we so choose instead of making its own decision and wasting a call to DeviceAnalyzer. In the cron script we can now do the following:</p>
-<pre><code class="lang-php">ObjectToProcessTaskHelper::getObjectToProcessTask($user, <span class="hljs-string">'cron'</span>);
-</code></pre>
-<p>Sure enough, the extra requests to DeviceAnalyzer went away after that. We could even take it a step further (and in the Java world this would almost certainly be the case) and use an interface for the device:</p>
-<pre><code class="lang-php">public <span class="hljs-keyword">static</span> function getObjectToProcessTask ($user, <span class="hljs-type">IDevice</span> $device=null) {
-    //...
-}
-//...
-class <span class="hljs-type">DesktopDevice</span> implements <span class="hljs-type">IDevice</span> <span class="hljs-meta">{...}</span>
-class <span class="hljs-type">CronDevice</span> implements <span class="hljs-type">IDevice</span> <span class="hljs-meta">{...}</span>
-</code></pre>
-<p>Since the argument is an interface, any mock device object can be used.</p>
+<pre class="language-php"><code class="language-php"><span class="token variable" >$objectToProcessTask</span><span class="token operator" >-</span><span class="token operator" >></span><span class="token function" >setSourceDevice</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span></code></pre><p>Our only way of getting this object is using the <code>getObjectToProcessTask method</code>, and it&#39;s just assuming we don&#39;t have a device to give it! Instead, the function should be written like this:</p>
+<pre class="language-php"><code class="language-php"><span class="token keyword" >public</span> <span class="token keyword" >static</span> <span class="token keyword" >function</span> <span class="token function" >getObjectToProcessTask</span> <span class="token punctuation" >(</span><span class="token variable" >$user</span><span class="token punctuation" >,</span> <span class="token markup" ><span class="token tag" ><span class="token tag" ><span class="token punctuation" >&lt;</span>span</span> <span class="token attr-name" >class</span><span class="token attr-value" ><span class="token punctuation" >=</span><span class="token punctuation" >"</span>highlight-code<span class="token punctuation" >"</span></span><span class="token punctuation" >></span></span></span><span class="token variable" >$device</span><span class="token operator" >=</span><span class="token keyword" >null</span><span class="token markup" ><span class="token tag" ><span class="token tag" ><span class="token punctuation" >&lt;/</span>span</span><span class="token punctuation" >></span></span></span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token keyword" >if</span> <span class="token punctuation" >(</span><span class="token function" >is_null</span><span class="token punctuation" >(</span>self<span class="token punctuation" >:</span><span class="token punctuation" >:</span><span class="token variable" >$objectToProcessTask</span><span class="token punctuation" >)</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+        <span class="token comment" spellcheck="true">//...</span>
+        <span class="token variable" >$objectToProcessTask</span> <span class="token operator" >=</span> <span class="token keyword" >new</span> <span class="token class-name" >ObjectToProcessTask</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+        <span class="token variable" >$objectToProcessTask</span><span class="token operator" >-</span><span class="token operator" >></span><span class="token function" >setSourceDevice</span><span class="token punctuation" >(</span><span class="token variable" >$device</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+        self<span class="token punctuation" >:</span><span class="token punctuation" >:</span><span class="token variable" >$objectToProcessTask</span> <span class="token operator" >=</span> <span class="token variable" >$objectToProcessTask</span><span class="token punctuation" >;</span>
+        <span class="token comment" spellcheck="true">//...</span>
+    <span class="token punctuation" >}</span>
+    <span class="token keyword" >return</span> self<span class="token punctuation" >:</span><span class="token punctuation" >:</span><span class="token variable" >$objectToProcessTask</span><span class="token punctuation" >;</span>
+<span class="token punctuation" >}</span></code></pre><p>Perfect! Now we can actually use that setter in the way it was intended &mdash; to inject the device if we so choose instead of making its own decision and wasting a call to DeviceAnalyzer. In the cron script we can now do the following:</p>
+<pre class="language-php"><code class="language-php">ObjectToProcessTaskHelper<span class="token punctuation" >:</span><span class="token punctuation" >:</span><span class="token function" >getObjectToProcessTask</span><span class="token punctuation" >(</span><span class="token variable" >$user</span><span class="token punctuation" >,</span> <span class="token string" >'cron'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span></code></pre><p>Sure enough, the extra requests to DeviceAnalyzer went away after that. We could even take it a step further (and in the Java world this would almost certainly be the case) and use an interface for the device:</p>
+<pre class="language-php"><code class="language-php"><span class="token keyword" >public</span> <span class="token keyword" >static</span> <span class="token keyword" >function</span> <span class="token function" >getObjectToProcessTask</span> <span class="token punctuation" >(</span><span class="token variable" >$user</span><span class="token punctuation" >,</span> IDevice <span class="token variable" >$device</span><span class="token operator" >=</span><span class="token keyword" >null</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token comment" spellcheck="true">//...</span>
+<span class="token punctuation" >}</span>
+<span class="token comment" spellcheck="true">//...</span>
+<span class="token keyword" >class</span> <span class="token class-name" >DesktopDevice</span> <span class="token keyword" >implements</span> <span class="token class-name" >IDevice</span> <span class="token punctuation" >{</span><span class="token punctuation" >.</span><span class="token punctuation" >.</span><span class="token punctuation" >.</span><span class="token punctuation" >}</span>
+<span class="token keyword" >class</span> <span class="token class-name" >CronDevice</span> <span class="token keyword" >implements</span> <span class="token class-name" >IDevice</span> <span class="token punctuation" >{</span><span class="token punctuation" >.</span><span class="token punctuation" >.</span><span class="token punctuation" >.</span><span class="token punctuation" >}</span></code></pre><p>Since the argument is an interface, any mock device object can be used.</p>
 <p>So what have we learned from this?</p>
 <ul>
 <li><p>Dependency injection is just passing in values a class depends on rather than it assuming some default value or behavior. We are <em>injecting</em> whatever properties the class requires for use in later functionality. We can achieve this a couple ways:</p>

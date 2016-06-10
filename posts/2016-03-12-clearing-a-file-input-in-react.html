@@ -1,45 +1,41 @@
 <p>The React project I&#39;m developing for work is an internal tool for our HTML5 game developers to upload their game packages and test them against a dummy Express API. I had actually written this tool already in PHP a long time ago, but its presence as a component on another property&#39;s Joomla installation has been a nightmare (downtime every time the team deploys a QA build, no ability to tap into their database, etc.) Thankfully I&#39;ve been allocated a box to recreate the tool using a MERN (Mongo-Express-React/Redux-Node) stack.</p>
 <p>Since the project is a tool there are lot of input fields involved. One issue I ran into was giving a user the ability to clear an upload field after they uploaded a file to it. I created a React component for a file upload field which renders a label, the input field itself, and a delete icon using <a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a>. Since a file input&#39;s value cannot be changed through JavaScript (imagine me automatically setting a field to <code>/etc/passwd</code>), when &quot;clearing&quot; a file I could instead leverage the component&#39;s state to be the source of truth:</p>
-<pre><code class="lang-js"><span class="hljs-selector-tag">onDelete</span>() {
-  <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.setState</span>({
-    <span class="hljs-attribute">file</span>: null
-  });
+<pre class="language-js"><code class="language-js"><span class="token function" >onDelete</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+  <span class="token keyword" >this</span><span class="token punctuation" >.</span><span class="token function" >setState</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+    file<span class="token punctuation" >:</span> <span class="token keyword" >null</span>
+  <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
 
-  <span class="hljs-selector-tag">if</span> (this.props.onChange) <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onChange</span>(null);
-}
-</code></pre>
-<p>The only issue was, if the user tried to upload the <em>same</em> file again, the input field would not fire a change event as the input tag remained unchanged from the faux-clear we did. The only obvious solution I found then was that the tag would need to be rerendered, giving it an empty value again.</p>
+  <span class="token keyword" >if</span> <span class="token punctuation" >(</span><span class="token keyword" >this</span><span class="token punctuation" >.</span>props<span class="token punctuation" >.</span>onChange<span class="token punctuation" >)</span> <span class="token keyword" >this</span><span class="token punctuation" >.</span>props<span class="token punctuation" >.</span><span class="token function" >onChange</span><span class="token punctuation" >(</span><span class="token keyword" >null</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<span class="token punctuation" >}</span></code></pre><p>The only issue was, if the user tried to upload the <em>same</em> file again, the input field would not fire a change event as the input tag remained unchanged from the faux-clear we did. The only obvious solution I found then was that the tag would need to be rerendered, giving it an empty value again.</p>
 <p>This actually proved very easy to do in React. The <strong><code>key</code></strong> attribute, if changed, will force an element to be rerendered. Therefore, we can simply do this:</p>
-<pre><code class="lang-js">export <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FileUpload</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
-  constructor(props) {
-    <span class="hljs-keyword">super</span>(props);
+<pre class="language-js"><code class="language-js"><span class="token keyword" >export</span> <span class="token keyword" >default</span> <span class="token keyword" >class</span> <span class="token class-name" >FileUpload</span> <span class="token keyword" >extends</span> <span class="token class-name" >React<span class="token punctuation" >.</span>Component</span> <span class="token punctuation" >{</span>
+  <span class="token function" >constructor</span><span class="token punctuation" >(</span>props<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token keyword" >super</span><span class="token punctuation" >(</span>props<span class="token punctuation" >)</span><span class="token punctuation" >;</span>
 
-    <span class="hljs-keyword">this</span>.state = {
-      file: <span class="hljs-literal">null</span>,
-      inputKey: <span class="hljs-type">Date</span>.now()
-    };
-  }
+    <span class="token keyword" >this</span><span class="token punctuation" >.</span>state <span class="token operator" >=</span> <span class="token punctuation" >{</span>
+      file<span class="token punctuation" >:</span> <span class="token keyword" >null</span><span class="token punctuation" >,</span>
+      inputKey<span class="token punctuation" >:</span> Date<span class="token punctuation" >.</span><span class="token function" >now</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+  <span class="token punctuation" >}</span>
 
-  <span class="hljs-comment">//...</span>
+  <span class="token comment" spellcheck="true">//...</span>
 
-  onDelete() {
-    <span class="hljs-keyword">this</span>.setState({
-      file: <span class="hljs-literal">null</span>,
-      inputKey: <span class="hljs-type">Date</span>.now()
-    });
+  <span class="token function" >onDelete</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token keyword" >this</span><span class="token punctuation" >.</span><span class="token function" >setState</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+      file<span class="token punctuation" >:</span> <span class="token keyword" >null</span><span class="token punctuation" >,</span>
+      inputKey<span class="token punctuation" >:</span> Date<span class="token punctuation" >.</span><span class="token function" >now</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
 
-    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.props.onChange) <span class="hljs-keyword">this</span>.props.onChange(<span class="hljs-literal">null</span>);
-  }
+    <span class="token keyword" >if</span> <span class="token punctuation" >(</span><span class="token keyword" >this</span><span class="token punctuation" >.</span>props<span class="token punctuation" >.</span>onChange<span class="token punctuation" >)</span> <span class="token keyword" >this</span><span class="token punctuation" >.</span>props<span class="token punctuation" >.</span><span class="token function" >onChange</span><span class="token punctuation" >(</span><span class="token keyword" >null</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+  <span class="token punctuation" >}</span>
 
-  render() {
-    <span class="hljs-keyword">return</span> (
-      <span class="hljs-comment">//...</span>
-      &lt;input
-        <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"file"</span>
-        key={<span class="hljs-keyword">this</span>.state.inputKey}
-        <span class="hljs-comment">//...</span>
-      /&gt;
-    );
-  }
-</code></pre>
-<p>  Now every time the delete icon is clicked, the key will update with a new timestamp and force a rerender.</p>
+  <span class="token function" >render</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token keyword" >return</span> <span class="token punctuation" >(</span>
+      <span class="token comment" spellcheck="true">//...</span>
+      <span class="token operator" >&lt;</span>input
+        type<span class="token operator" >=</span><span class="token string" >"file"</span>
+        key<span class="token operator" >=</span><span class="token punctuation" >{</span><span class="token keyword" >this</span><span class="token punctuation" >.</span>state<span class="token punctuation" >.</span>inputKey<span class="token punctuation" >}</span>
+        <span class="token comment" spellcheck="true">//...</span>
+      <span class="token operator" >/</span><span class="token operator" >></span>
+    <span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+  <span class="token punctuation" >}</span></code></pre><p>  Now every time the delete icon is clicked, the key will update with a new timestamp and force a rerender.</p>
